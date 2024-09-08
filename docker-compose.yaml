@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+  # Сервер аутентификации
+  auth:
+    container_name: auth
+    build: ./auth
+    ports:
+      - ${AUTH_PORT}:${AUTH_PORT}
+    depends_on:
+      - db_auth
+    restart: unless-stopped
+    networks:
+      - server_net
+    environment:
+      - PORT=${AUTH_PORT}
+      - DB_HOST_ADDRESS=db_auth
+      - DB_PORT=${DB_AUTH_PORT}
+      - DB_USERNAME=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_SSL=${DB_USE_SSL}
+      - DB_SK=${DB_SK_AUTH}
+      - JWT_SK=${JWT_SK}
+      - ACCESS_TOKEN_LIFE=${ACCESS_TOKEN_LIFE}
+      - REFRESH_TOKEN_LIFE=${REFRESH_TOKEN_LIFE}
+
+  # База данных для сервера аутентификации
+  db_auth:
+    image: postgres:16.4-alpine
+    container_name: db_auth
+    ports:
+      - "${DB_AUTH_PORT}:${DB_AUTH_PORT}"
+    restart: unless-stopped  
+    command:
+      - "postgres"
+      - "-c"
+      - "port=${DB_AUTH_PORT}"  
+    volumes:
+      - db_auth_vol:/var/lib/postgresql/data/
+    networks:
+      - server_net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -p ${DB_AUTH_PORT} -U ${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - TZ=${TZ}
+
+volumes:
+  db_auth_vol: {}
+
+networks:
+  server_net:
+    driver: bridge
