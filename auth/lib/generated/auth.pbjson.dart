@@ -19,19 +19,20 @@ const UserDto$json = {
   '2': [
     {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
     {'1': 'username', '3': 2, '4': 1, '5': 9, '10': 'username'},
-    {'1': 'email', '3': 3, '4': 1, '5': 9, '10': 'email'},
-    {'1': 'password', '3': 4, '4': 1, '5': 9, '9': 0, '10': 'password'},
+    {'1': 'email', '3': 3, '4': 1, '5': 9, '9': 0, '10': 'email'},
+    {'1': 'password', '3': 4, '4': 1, '5': 9, '9': 1, '10': 'password'},
   ],
   '8': [
+    {'1': 'optional_email'},
     {'1': 'optional_password'},
   ],
 };
 
 /// Descriptor for `UserDto`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List userDtoDescriptor = $convert.base64Decode(
-    'CgdVc2VyRHRvEg4KAmlkGAEgASgJUgJpZBIaCgh1c2VybmFtZRgCIAEoCVIIdXNlcm5hbWUSFA'
-    'oFZW1haWwYAyABKAlSBWVtYWlsEhwKCHBhc3N3b3JkGAQgASgJSABSCHBhc3N3b3JkQhMKEW9w'
-    'dGlvbmFsX3Bhc3N3b3Jk');
+    'CgdVc2VyRHRvEg4KAmlkGAEgASgJUgJpZBIaCgh1c2VybmFtZRgCIAEoCVIIdXNlcm5hbWUSFg'
+    'oFZW1haWwYAyABKAlIAFIFZW1haWwSHAoIcGFzc3dvcmQYBCABKAlIAVIIcGFzc3dvcmRCEAoO'
+    'b3B0aW9uYWxfZW1haWxCEwoRb3B0aW9uYWxfcGFzc3dvcmQ=');
 
 @$core.Deprecated('Use tokensDtoDescriptor instead')
 const TokensDto$json = {
@@ -73,15 +74,12 @@ const FindDto$json = {
   '1': 'FindDto',
   '2': [
     {'1': 'key', '3': 1, '4': 1, '5': 9, '10': 'key'},
-    {'1': 'limit', '3': 2, '4': 1, '5': 9, '10': 'limit'},
-    {'1': 'offset', '3': 3, '4': 1, '5': 9, '10': 'offset'},
   ],
 };
 
 /// Descriptor for `FindDto`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List findDtoDescriptor = $convert.base64Decode(
-    'CgdGaW5kRHRvEhAKA2tleRgBIAEoCVIDa2V5EhQKBWxpbWl0GAIgASgJUgVsaW1pdBIWCgZvZm'
-    'ZzZXQYAyABKAlSBm9mZnNldA==');
+    'CgdGaW5kRHRvEhAKA2tleRgBIAEoCVIDa2V5');
 
 @$core.Deprecated('Use listUsersDtoDescriptor instead')
 const ListUsersDto$json = {

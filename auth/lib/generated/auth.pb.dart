@@ -13,6 +13,11 @@ import 'dart:core' as $core;
 
 import 'package:protobuf/protobuf.dart' as $pb;
 
+enum UserDto_OptionalEmail {
+  email, 
+  notSet
+}
+
 enum UserDto_OptionalPassword {
   password, 
   notSet
@@ -24,12 +29,17 @@ class UserDto extends $pb.GeneratedMessage {
   factory UserDto.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory UserDto.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
+  static const $core.Map<$core.int, UserDto_OptionalEmail> _UserDto_OptionalEmailByTag = {
+    3 : UserDto_OptionalEmail.email,
+    0 : UserDto_OptionalEmail.notSet
+  };
   static const $core.Map<$core.int, UserDto_OptionalPassword> _UserDto_OptionalPasswordByTag = {
     4 : UserDto_OptionalPassword.password,
     0 : UserDto_OptionalPassword.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'UserDto', createEmptyInstance: create)
-    ..oo(0, [4])
+    ..oo(0, [3])
+    ..oo(1, [4])
     ..aOS(1, _omitFieldNames ? '' : 'id')
     ..aOS(2, _omitFieldNames ? '' : 'username')
     ..aOS(3, _omitFieldNames ? '' : 'email')
@@ -58,8 +68,11 @@ class UserDto extends $pb.GeneratedMessage {
   static UserDto getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<UserDto>(create);
   static UserDto? _defaultInstance;
 
-  UserDto_OptionalPassword whichOptionalPassword() => _UserDto_OptionalPasswordByTag[$_whichOneof(0)]!;
-  void clearOptionalPassword() => clearField($_whichOneof(0));
+  UserDto_OptionalEmail whichOptionalEmail() => _UserDto_OptionalEmailByTag[$_whichOneof(0)]!;
+  void clearOptionalEmail() => clearField($_whichOneof(0));
+
+  UserDto_OptionalPassword whichOptionalPassword() => _UserDto_OptionalPasswordByTag[$_whichOneof(1)]!;
+  void clearOptionalPassword() => clearField($_whichOneof(1));
 
   @$pb.TagNumber(1)
   $core.String get id => $_getSZ(0);
@@ -232,8 +245,6 @@ class FindDto extends $pb.GeneratedMessage {
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'FindDto', createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'key')
-    ..aOS(2, _omitFieldNames ? '' : 'limit')
-    ..aOS(3, _omitFieldNames ? '' : 'offset')
     ..hasRequiredFields = false
   ;
 
@@ -266,24 +277,6 @@ class FindDto extends $pb.GeneratedMessage {
   $core.bool hasKey() => $_has(0);
   @$pb.TagNumber(1)
   void clearKey() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $core.String get limit => $_getSZ(1);
-  @$pb.TagNumber(2)
-  set limit($core.String v) { $_setString(1, v); }
-  @$pb.TagNumber(2)
-  $core.bool hasLimit() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearLimit() => clearField(2);
-
-  @$pb.TagNumber(3)
-  $core.String get offset => $_getSZ(2);
-  @$pb.TagNumber(3)
-  set offset($core.String v) { $_setString(2, v); }
-  @$pb.TagNumber(3)
-  $core.bool hasOffset() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearOffset() => clearField(3);
 }
 
 class ListUsersDto extends $pb.GeneratedMessage {

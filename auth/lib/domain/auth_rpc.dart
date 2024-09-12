@@ -132,39 +132,47 @@ class AuthRpc extends AuthRpcServiceBase {
     String? encryptedEmail = request.email.isEmpty ? null : utils.encryptEmail(request.email);
     String? hashPassword = request.password.isEmpty ? null : utils.getHashPassword(request.password);
 
+    if (username == null && encryptedEmail == null && hashPassword == null) {
+      throw GrpcError.custom(456, 'Не передано уникальных данных для обновления');
+    }
+
     if (env.connection.isOpen == false) {
       // Соединение с БД ещё не установлено, либо docker контейнер не запущен
       env.connection = await utils.createConnection();
     }
-    if (username == null && encryptedEmail == null && hashPassword == null) {
-      throw GrpcError.custom(456, 'Не передано уникальных данных для обновления');
-    }
+
     // Транзакция на проверку и обновления данных пользователя
     await env.connection.runTx((connection) async {
       try {
         if (username != null) {
           // Проверяем наличие пользователя с данным username в БД
-          query = 'SELECT 1 FROM users WHERE username = @username AND id <> @id FOR UPDATE';
-          parameters = {'id': id, 'username': username};
+          query = 'SELECT id FROM users WHERE username = @username FOR UPDATE';
+          parameters = {'username': username};
           final result = await connection.execute(Sql.named(query), parameters: parameters);
 
-          if (result.isNotEmpty) {
-            throw GrpcError.custom(452, 'Указанное имя уже используется');
+          if (result.affectedRows == 1) {
+            if (result[0][0] != id) {
+              throw GrpcError.custom(452, 'Указанное имя уже используется');
+            } else {
+              // В запросе пользователь передал своё имя, ингорируем
+              username = null;
+            }
           }
-          // Для обновления передан тот же самый username, ингорируем
-          username = null;
         }
         if (encryptedEmail != null) {
           // Проверяем на совпадение шифрованной стороки с email и данными в БД
-          query = 'SELECT 1 FROM users WHERE email = @email AND id <> @id FOR UPDATE';
-          parameters = {'id': id, 'email': encryptedEmail};
+          query = 'SELECT id FROM users WHERE email = @email FOR UPDATE';
+          parameters = {'email': encryptedEmail};
           final result = await connection.execute(Sql.named(query), parameters: parameters);
 
-          if (result.isNotEmpty) {
-            throw GrpcError.custom(453, 'Указанный email уже используется');
+          if (result.affectedRows == 1) {
+            if (result[0][0] != id) {
+              throw GrpcError.custom(453, 'Указанный email уже используется');
+            } else {
+              // В запросе пользователь передал свой email, ингорируем
+              encryptedEmail = null;
+            }
           }
-          // Для обновления передан тот же самый email, ингорируем
-          encryptedEmail = null;
         }
         if (username == null && encryptedEmail == null && hashPassword == null) {
           throw GrpcError.custom(456, 'Не передано уникальных данных для обновления');
