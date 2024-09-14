@@ -1,5 +1,3 @@
-import 'dart:isolate';
-
 import 'package:grpc/grpc.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
 import 'package:postgres/postgres.dart';
@@ -233,74 +231,6 @@ class AuthRpc extends AuthRpcServiceBase {
       throw GrpcError.notFound('Пользователь не найден');
     }
     return ResponseDto()..id = id.toString();
-  }
-
-  //----------------------------------------------------------------------------
-  // Получить данные пользователя из БД по переданному acceess_token
-  @override
-  Future<UserDto> fetchUser(ServiceCall call, RequestDto request) async {
-    final id = utils.getIdFromMetadata(call);
-
-    if (env.connection.isOpen == false) {
-      // Соединение с БД ещё не установлено, либо docker контейнер не запущен
-      env.connection = await utils.createConnection();
-    }
-
-    // Запрашиваем только username пользователя
-    query = 'SELECT username FROM users WHERE id = @id';
-    parameters = {'id': id};
-    final result = await env.connection.execute(Sql.named(query), parameters: parameters);
-
-    if (result.isEmpty) {
-      throw GrpcError.notFound('Пользователь не найден');
-    }
-
-    return UserDto()
-      ..id = id.toString()
-      ..username = result[0][0] as String;
-  }
-
-  //----------------------------------------------------------------------------
-  // Поиск username пользователя по переданной строке в key
-  @override
-  Future<ListUsersDto> findUser(ServiceCall call, FindDto request) async {
-    late final Result result;
-    final key = request.key;
-
-    if (env.connection.isOpen == false) {
-      // Соединение с БД ещё не установлено, либо docker контейнер не запущен
-      env.connection = await utils.createConnection();
-    }
-
-    if (key.isEmpty) {
-      // Если ключ пустой возвращаем всех пользователей
-      query = 'SELECT username FROM users';
-      result = await env.connection.execute(query);
-
-      if (result.isEmpty) {
-        throw GrpcError.custom(458, 'Неизвестная ошибка при запросе в БД');
-      }
-    } else {
-      // Ключ содержит начальное значение для поиска
-      // Проверяем ключ на допустимые символы
-      if (!RegExp(r'^[А-ЯЁа-яёA-Za-z\d_-]+$').hasMatch(key)) {
-        throw GrpcError.custom(455, 'Строка содержит недопустимые символы');
-      }
-
-      query = "SELECT username FROM users WHERE username LIKE '%' || @key || '%'";
-      parameters = {'key': key};
-      result = await env.connection.execute(Sql.named(query), parameters: parameters);
-
-      if (result.isEmpty) {
-        throw GrpcError.custom(458, 'Неизвестная ошибка при запросе в БД');
-      }
-    }
-
-    // Закрываем соединение с БД
-    await env.connection.close();
-
-    return await Isolate.run(() => ListUsersDto()
-      ..users.addAll(List.generate(result.length, (i) => UserDto()..username = result[i][0] as String)));
   }
 
   //----------------------------------------------------------------------------

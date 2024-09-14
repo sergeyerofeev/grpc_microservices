@@ -5,8 +5,6 @@ service AuthRpc {
     rpc SignIn (UserDto) returns (TokensDto);
     rpc UpdateUser (UserDto) returns (UserDto);
     rpc DeleteUser (RequestDto) returns (ResponseDto);
-    rpc FetchUser (RequestDto) returns (UserDto);
-    rpc FindUser (FindDto) returns (ListUsersDto);
     rpc RefreshToken (TokensDto) returns (TokensDto);
 }
 

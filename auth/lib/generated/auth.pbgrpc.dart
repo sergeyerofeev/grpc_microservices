@@ -37,14 +37,6 @@ class AuthRpcClient extends $grpc.Client {
       '/AuthRpc/DeleteUser',
       ($0.RequestDto value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.ResponseDto.fromBuffer(value));
-  static final _$fetchUser = $grpc.ClientMethod<$0.RequestDto, $0.UserDto>(
-      '/AuthRpc/FetchUser',
-      ($0.RequestDto value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.UserDto.fromBuffer(value));
-  static final _$findUser = $grpc.ClientMethod<$0.FindDto, $0.ListUsersDto>(
-      '/AuthRpc/FindUser',
-      ($0.FindDto value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.ListUsersDto.fromBuffer(value));
   static final _$refreshToken = $grpc.ClientMethod<$0.TokensDto, $0.TokensDto>(
       '/AuthRpc/RefreshToken',
       ($0.TokensDto value) => value.writeToBuffer(),
@@ -70,14 +62,6 @@ class AuthRpcClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$0.ResponseDto> deleteUser($0.RequestDto request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$deleteUser, request, options: options);
-  }
-
-  $grpc.ResponseFuture<$0.UserDto> fetchUser($0.RequestDto request, {$grpc.CallOptions? options}) {
-    return $createUnaryCall(_$fetchUser, request, options: options);
-  }
-
-  $grpc.ResponseFuture<$0.ListUsersDto> findUser($0.FindDto request, {$grpc.CallOptions? options}) {
-    return $createUnaryCall(_$findUser, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.TokensDto> refreshToken($0.TokensDto request, {$grpc.CallOptions? options}) {
@@ -118,20 +102,6 @@ abstract class AuthRpcServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.RequestDto.fromBuffer(value),
         ($0.ResponseDto value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.RequestDto, $0.UserDto>(
-        'FetchUser',
-        fetchUser_Pre,
-        false,
-        false,
-        ($core.List<$core.int> value) => $0.RequestDto.fromBuffer(value),
-        ($0.UserDto value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.FindDto, $0.ListUsersDto>(
-        'FindUser',
-        findUser_Pre,
-        false,
-        false,
-        ($core.List<$core.int> value) => $0.FindDto.fromBuffer(value),
-        ($0.ListUsersDto value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.TokensDto, $0.TokensDto>(
         'RefreshToken',
         refreshToken_Pre,
@@ -157,14 +127,6 @@ abstract class AuthRpcServiceBase extends $grpc.Service {
     return deleteUser(call, await request);
   }
 
-  $async.Future<$0.UserDto> fetchUser_Pre($grpc.ServiceCall call, $async.Future<$0.RequestDto> request) async {
-    return fetchUser(call, await request);
-  }
-
-  $async.Future<$0.ListUsersDto> findUser_Pre($grpc.ServiceCall call, $async.Future<$0.FindDto> request) async {
-    return findUser(call, await request);
-  }
-
   $async.Future<$0.TokensDto> refreshToken_Pre($grpc.ServiceCall call, $async.Future<$0.TokensDto> request) async {
     return refreshToken(call, await request);
   }
@@ -173,7 +135,5 @@ abstract class AuthRpcServiceBase extends $grpc.Service {
   $async.Future<$0.TokensDto> signIn($grpc.ServiceCall call, $0.UserDto request);
   $async.Future<$0.UserDto> updateUser($grpc.ServiceCall call, $0.UserDto request);
   $async.Future<$0.ResponseDto> deleteUser($grpc.ServiceCall call, $0.RequestDto request);
-  $async.Future<$0.UserDto> fetchUser($grpc.ServiceCall call, $0.RequestDto request);
-  $async.Future<$0.ListUsersDto> findUser($grpc.ServiceCall call, $0.FindDto request);
   $async.Future<$0.TokensDto> refreshToken($grpc.ServiceCall call, $0.TokensDto request);
 }
