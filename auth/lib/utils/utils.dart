@@ -8,7 +8,6 @@ import 'package:encrypt/encrypt.dart';
 import 'package:grpc/grpc.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
 import 'package:postgres/postgres.dart';
-import 'package:process_run/shell_run.dart';
 
 import 'env.dart' as env;
 import '../generated/auth.pbgrpc.dart';
@@ -122,9 +121,15 @@ Future<Connection> createConnection() async {
       );
       break;
     } on SocketException {
-      // При неудачном подключения к БД, перезапустим docker контейнера с PostgreSQL
-      await Shell().run('docker restart ${env.dbContainerName}');
-      await Future.delayed(Duration(seconds: 5), () {});
+      // При неудачном подключения к БД, перезапустим сервис PostgreSQL
+      final process = await Process.start('sudo', ['-S', 'systemctl', 'restart', 'postgresql.service']);
+
+      // Пишем пароль в stdin процесса sudo
+      process.stdin.write(env.userPass);
+      await process.stdin.close();
+
+      // Ожидаем окончания процесса sudo
+      await process.exitCode;
     }
   }
   return connection;

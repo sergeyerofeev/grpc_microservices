@@ -12,7 +12,6 @@ dependencies:
   grpc: ^4.0.0
   jaguar_jwt: ^3.0.0
   postgres: ^3.3.0
-  process_run: ^1.2.0
   protobuf: ^3.1.0
 
 dev_dependencies:
